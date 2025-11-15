@@ -1,32 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../core/theme.dart';
-import '../../../providers/app_provider.dart';
+import '../../../providers/settings.dart';
 
 class NavItemMobile extends ConsumerWidget {
-  const NavItemMobile({super.key, required this.index, required this.title});
-  final int index;
+  const NavItemMobile({
+    super.key,
+    required this.index,
+    required this.title,
+    required this.selectedColor,
+  });
+  final double index;
   final String title;
+  final int selectedColor;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDarkMode =
-        Theme.of(context).colorScheme.brightness == Brightness.dark;
     return InkWell(
       onTap: () {
-        ref.read(appProvider.notifier).scrollTo(index, context);
-        Navigator.pop(context);
+        ref.read(settingsProvider.notifier).scrollTo(index);
+        context.pop();
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         margin: const EdgeInsets.only(bottom: 2),
         width: double.infinity,
-        color: isDarkMode ? graySwatch.shade800 : graySwatch.shade200,
+        color: Color(selectedColor),
         child: Text(
           title,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -35,21 +39,28 @@ class NavItemMobile extends ConsumerWidget {
 
 class NavItem extends ConsumerWidget {
   const NavItem({super.key, required this.index, required this.title});
-  final int index;
+  final double index;
   final String title;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: () {
-        ref.read(appProvider.notifier).scrollTo(index, context);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        focusNode: FocusNode(),
+        onTap: () {
+          ref.read(settingsProvider.notifier).scrollTo(index);
+        },
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              title,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+            ),
+          ),
         ),
       ),
     );

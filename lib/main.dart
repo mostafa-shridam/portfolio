@@ -1,107 +1,130 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:developer';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:portfolio/firebase_options.dart';
+import 'package:portfolio/providers/settings.dart';
+
 import 'package:responsive_framework/responsive_framework.dart';
-import 'core/scroll_behavior.dart';
-import 'core/theme.dart';
-import 'pages/home/home.dart';
-import 'providers/app_provider.dart';
-import 'pages/project_details/project_details.dart';
-import 'pages/home/models/projects.dart';
+import 'core/constants.dart';
+import 'core/extensions/font_family.dart';
+import 'core/extensions/font_size.dart';
+import 'core/extensions/theme_mode.dart';
+import 'core/services/app_router.dart';
+import 'core/local_service/local_storage.dart';
+import 'core/services/helper.dart';
+import 'core/services/life_cycle_manager.dart';
+import 'core/services/scroll_behavior.dart';
+import 'core/theme/style.dart';
+import 'generated/codegen_loader.g.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+Future<void> init() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Enable web-specific optimizations
-  if (kIsWeb) {
-    // Add any web-specific initialization here
-  }
+  await LocalStorage.instance.initHive();
+}
 
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
+void main() async {
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      await init();
+      runApp(
+        ProviderScope(
+          child: EasyLocalization(
+            supportedLocales: supportedLocales,
+            path: translationsPath,
+            useOnlyLangCode: true,
+            useFallbackTranslations: true,
+            fallbackLocale: Locale(getLanguageCodeHelper()),
+            startLocale: Locale(getLanguageCodeHelper()),
+            assetLoader: const CodegenLoader(),
+            child: const MyApp(),
+          ),
+        ),
+      );
+    },
+    (error, stackTrace) {
+      log('Error: $error');
+      log('Stack Trace: $stackTrace');
+    },
   );
 }
 
-class MyApp extends ConsumerStatefulWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
-  ConsumerState<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends ConsumerState<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updateLayout();
-    });
-  }
-
-  void _updateLayout() {
-    if (!mounted) return;
-    final isMobile = MediaQuery.of(context).size.width < 600;
-    ref.read(appProvider.notifier).updateLayout(isMobile);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final themeMode = ref.watch(appProvider.select((value) => value.themeMode));
-    final isMobile = ref.watch(appProvider.select((value) => value.isMobile));
-
-    return ResponsiveBreakpoints(
-      breakpoints: [
-        const Breakpoint(start: 0, end: 450, name: MOBILE),
-        const Breakpoint(start: 451, end: 800, name: TABLET),
-        const Breakpoint(start: 801, end: 1200, name: DESKTOP),
-        const Breakpoint(start: 1201, end: 1920, name: 'LARGE_DESKTOP'),
-        const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
-      ],
-      child: MaterialApp(
-        title: 'Mostafa Portfolio',
-        debugShowCheckedModeBanner: false,
-        theme: appTheme(isMobile),
-        darkTheme: darkTheme(isMobile),
-        themeMode: themeMode,
-        home: const HomePage(),
-        scrollBehavior: CustomScrollBehavior(),
-        builder: (context, child) {
-          final mediaQueryData = MediaQuery.of(context);
-          return ResponsiveScaledBox(
-            width: ResponsiveValue<double?>(
-              context,
-              conditionalValues: [
-                const Condition.equals(name: MOBILE, value: 450),
-                const Condition.between(start: 451, end: 800, value: 800),
-                const Condition.between(start: 801, end: 1200, value: 1200),
-                const Condition.between(start: 1201, end: 1920, value: 1920),
-                Condition.largerThan(
-                  name: 'LARGE_DESKTOP',
-                  value: mediaQueryData.size.width < 1920
-                      ? 1920.0
-                      : mediaQueryData.size.width,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(settingsProvider).themeMode ?? Thememode.system;
+    final fontFamily =
+        ref.watch(settingsProvider).fontFamily?.toStr ?? FontFamily.cairo.toStr;
+    final fontSize =
+        ref.watch(settingsProvider).fontSizes?.size ?? FontSizes.medium.size;
+    return GestureDetector(
+      onTap: unfocusCurrent,
+      child: ResponsiveBreakpoints(
+        breakpoints: [
+          Breakpoint(start: 0, end: 600, name: MOBILE),
+          Breakpoint(start: 601, end: 1200, name: TABLET),
+          Breakpoint(start: 1201, end: double.infinity, name: DESKTOP),
+        ],
+        child: LifeCycleManager(
+          child: MaterialApp.router(
+            title: 'Portfolio',
+            scrollBehavior: CustomScrollBehavior(),
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            theme: getLightTheme(fontFamily),
+            darkTheme: getDarkTheme(fontFamily),
+            themeMode: themeMode.flutterThemeMode,
+            routerConfig: AppRouter.router,
+            builder: (context, child) {
+              final mediaQueryData = MediaQuery.of(context);
+              return ResponsiveScaledBox(
+                width: ResponsiveValue<double?>(
+                  context,
+                  conditionalValues: [
+                    if (kIsWeb)
+                      Condition.equals(
+                        name: DESKTOP,
+                        value: mediaQueryData.size.width,
+                      ),
+                    const Condition.equals(name: MOBILE, value: 450),
+                    const Condition.between(start: 601, end: 800, value: 800),
+                    Condition.between(
+                      start: 801,
+                      end: 1200,
+                      value: mediaQueryData.size.width,
+                    ),
+                    Condition.largerThan(
+                      name: TABLET,
+                      value: mediaQueryData.size.width,
+                    ),
+                  ],
+                ).value,
+                child: MediaQuery(
+                  data: mediaQueryData.copyWith(
+                    textScaler: TextScaler.linear(fontSize),
+                  ),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
+                    child: child,
+                  ),
                 ),
-              ],
-            ).value,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-              ),
-              child: child,
-            ),
-          );
-        },
-        onGenerateRoute: (settings) {
-          if (settings.name == ProjectDetails.routeName) {
-            final project = settings.arguments as Project;
-            return MaterialPageRoute(
-              builder: (context) => ProjectDetails(project: project),
-            );
-          }
-          return null;
-        },
+              );
+            },
+          ),
+        ),
       ),
     );
   }
