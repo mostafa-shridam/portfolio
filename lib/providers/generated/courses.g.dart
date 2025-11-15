@@ -40,7 +40,7 @@ final class CoursesProvider extends $NotifierProvider<Courses, CoursesState> {
   }
 }
 
-String _$coursesHash() => r'085b2917e97aad85fefdc7c3a31047b44b3b045f';
+String _$coursesHash() => r'42a191cb0abfe42802af1ab622524bbb61cc9307';
 
 abstract class _$Courses extends $Notifier<CoursesState> {
   CoursesState build();

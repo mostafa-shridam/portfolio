@@ -41,7 +41,7 @@ final class AboutProviderProvider
   }
 }
 
-String _$aboutProviderHash() => r'1075fac4ff45b93413d329f18aa0e12f563f1ad9';
+String _$aboutProviderHash() => r'ec5e309f432fc35faa562ff6c4cad297d13a9fa8';
 
 abstract class _$AboutProvider extends $Notifier<AboutState> {
   AboutState build();

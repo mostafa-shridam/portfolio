@@ -19,7 +19,7 @@ import 'widgets/nav_item.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   static const routeName = '/home-page';
-  final String? userId;
+  final String userId;
   const HomePage({super.key, required this.userId});
   @override
   ConsumerState<HomePage> createState() => _ProfessionalDevState();
@@ -30,9 +30,10 @@ class _ProfessionalDevState extends ConsumerState<HomePage>
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async => await ref
-        .read(initProvider.notifier)
-        .initAllData(widget.userId ?? 'xf7Q3vOjjaUWc5hvsjCQNLaCSw53'));
+    Future.microtask(
+      () async =>
+          await ref.read(initProvider.notifier).initAllData(widget.userId),
+    );
   }
 
   @override
@@ -40,11 +41,37 @@ class _ProfessionalDevState extends ConsumerState<HomePage>
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final isMobile = ResponsiveBreakpoints.of(context).isMobile;
 
-    final userData =
-        ref.read(userDataProvider.select((e) => e.user ?? UserModel()));
-    final selectedColor = ref.read(userDataProvider
-        .select((e) => e.user?.selectedColor ?? primaryColor.toARGB32()));
+    final userData = ref.read(
+      userDataProvider.select((e) => e.user),
+    );
+    final selectedColor = ref.read(
+      userDataProvider.select(
+        (e) => e.user?.selectedColor ?? primaryColor.toARGB32(),
+      ),
+    );
+    final isLoading = ref.watch(
+      userDataProvider.select((e) => e.isLoading),
+    );
+    final isError = ref.watch(
+      initProvider.select((e) => e.isError),
+    );
+    final errMessage = ref.watch(initProvider.select((e) => e.errorMessage));
     final currentColor = Color(selectedColor);
+    if (isLoading == true) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    if (userData == null || isError == true) {
+      return Scaffold(
+        body: Center(
+          child:
+              Text(isError == true ? '$errMessage' : 'No user data available'),
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: currentColor.withValues(alpha: 0.1),
       drawer: isMobile
@@ -187,18 +214,12 @@ class _ProfessionalDevState extends ConsumerState<HomePage>
         controller: ref.watch(settingsProvider.notifier).scrollController,
         child: Column(
           children: [
-            HeroSection(
-              userData: userData,
-              selectedColor: selectedColor,
-            ),
+            HeroSection(userData: userData, selectedColor: selectedColor),
             AboutSection(selectedColor: selectedColor),
             SkillsSection(selectedColor: selectedColor),
             ProjectsSection(selectedColor: selectedColor),
             CoursesSection(selectedColor: selectedColor),
-            ContactSection(
-              userData: userData,
-              selectedColor: selectedColor,
-            ),
+            ContactSection(userData: userData, selectedColor: selectedColor),
           ],
         ),
       ),

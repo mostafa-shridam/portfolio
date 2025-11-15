@@ -21,7 +21,7 @@ class UserData extends _$UserData {
       if (!ref.mounted) return; // لو widget اتدمرت، سيب الموضوع
 
       final snap = await _firestore
-          .collection(Constants.userData.name)
+          .collection(Constants.portfolioUser.name)
           .doc(userId)
           .get();
       final user = UserModel.fromJson(snap.data() ?? {});

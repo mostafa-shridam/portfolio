@@ -40,7 +40,7 @@ final class SkillsProvider extends $NotifierProvider<Skills, SkillsState> {
   }
 }
 
-String _$skillsHash() => r'43289f6a5684d99035db05e8f31915f8b4e0f9d6';
+String _$skillsHash() => r'bdb4c5b480afb7a45d9090a16b9aa7858f64105b';
 
 abstract class _$Skills extends $Notifier<SkillsState> {
   SkillsState build();

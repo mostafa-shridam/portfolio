@@ -12,7 +12,7 @@ part of '../init.dart';
 @ProviderFor(Init)
 const initProvider = InitProvider._();
 
-final class InitProvider extends $NotifierProvider<Init, void> {
+final class InitProvider extends $NotifierProvider<Init, InitState> {
   const InitProvider._()
       : super(
           from: null,
@@ -32,25 +32,25 @@ final class InitProvider extends $NotifierProvider<Init, void> {
   Init create() => Init();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
+  Override overrideWithValue(InitState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<InitState>(value),
     );
   }
 }
 
-String _$initHash() => r'16bf95b6ec035e2c3d31dd2a4eba5c75842a8489';
+String _$initHash() => r'16d493d7644d57ce533cd4aaba02e93370e820d7';
 
-abstract class _$Init extends $Notifier<void> {
-  void build();
+abstract class _$Init extends $Notifier<InitState> {
+  InitState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    build();
-    final ref = this.ref as $Ref<void, void>;
+    final created = build();
+    final ref = this.ref as $Ref<InitState, InitState>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<void, void>, void, Object?, Object?>;
-    element.handleValue(ref, null);
+        AnyNotifier<InitState, InitState>, InitState, Object?, Object?>;
+    element.handleValue(ref, created);
   }
 }
