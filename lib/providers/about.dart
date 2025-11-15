@@ -40,8 +40,11 @@ class AboutProvider extends _$AboutProvider {
   // ABOUT DATA METHODS
   // ============================================
 
-  Future<void> getAboutData(String userId) async {
+  Future<void> _getAboutData(String userId) async {
+    state = state.copyWith(isLoading: true);
+
     try {
+      if (!ref.mounted) return;
       final aboutData = await _firestore
           .collection(Constants.aboutData.name)
           .doc(userId)
@@ -75,7 +78,9 @@ class AboutProvider extends _$AboutProvider {
   // WORK EXPERIENCE METHODS
   // ============================================
   Future<void> _getWorkExperience(String userId) async {
+    state = state.copyWith(isLoading: true);
     try {
+      if (!ref.mounted) return;
       final workExperience = await _firestore
           .collection(Constants.workExperience.name)
           .doc(userId)
@@ -117,7 +122,9 @@ class AboutProvider extends _$AboutProvider {
   // EDUCATION METHODS
   // ============================================
   Future<void> _getEducation(String userId) async {
+    state = state.copyWith(isLoading: true);
     try {
+      if (!ref.mounted) return;
       final educationData = await _firestore
           .collection(Constants.education.name)
           .doc(userId)
@@ -165,7 +172,7 @@ class AboutProvider extends _$AboutProvider {
       if (!ref.mounted) return; // لو widget اتدمرت، سيب الموضوع
 
       await Future.wait([
-        getAboutData(userId),
+        _getAboutData(userId),
         _getWorkExperience(userId),
         _getEducation(userId),
       ]);
