@@ -2,11 +2,11 @@
 <html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=/" />
+  <meta charset="utf-8">
   <script>
-    // GitHub Pages SPA redirect
-    sessionStorage.redirect = location.href;
+    // Redirect all paths to the index.html inside the same folder
+    const redirectTo = window.location.origin + "/portfolio/";
+    window.location.replace(redirectTo);
   </script>
 </head>
 

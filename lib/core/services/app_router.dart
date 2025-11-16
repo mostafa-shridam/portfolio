@@ -8,10 +8,9 @@ import '../models/project.dart';
 /// browser back/forward navigation on web, and easy route expansion.
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '${HomePage.routeName}/:userId',
+    initialLocation: HomePage.routeName,
 
     routes: [
-      /// Auth Page
       GoRoute(
         path: '${HomePage.routeName}/:userId',
         name: HomePage.routeName,
