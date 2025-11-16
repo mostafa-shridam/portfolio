@@ -75,8 +75,8 @@ class _HomePageState extends ConsumerState<HomePage> with UrlLauncherMixin {
             backgroundColor: currentColor.withValues(alpha: 0.1),
             drawer: isMobile
                 ? Drawer(
-                    backgroundColor: currentColor,
-                    surfaceTintColor: currentColor,
+                    backgroundColor: currentColor.withValues(alpha: 0.9),
+                    elevation: 0,
                     child: ListView(
                       children: [
                         NavItemMobile(
@@ -85,17 +85,17 @@ class _HomePageState extends ConsumerState<HomePage> with UrlLauncherMixin {
                           selectedColor: selectedColor,
                         ),
                         NavItemMobile(
-                          index: 1,
+                          index: 1.2,
                           title: 'About',
                           selectedColor: selectedColor,
                         ),
                         NavItemMobile(
-                          index: 2,
+                          index: 2.8,
                           title: 'Skills',
                           selectedColor: selectedColor,
                         ),
                         NavItemMobile(
-                          index: 3,
+                          index: 3.38,
                           title: 'Projects',
                           selectedColor: selectedColor,
                         ),
@@ -128,10 +128,12 @@ class _HomePageState extends ConsumerState<HomePage> with UrlLauncherMixin {
                               ),
                               const Spacer(),
                               IconButton(
+                                padding: EdgeInsets.zero,
                                 icon: Icon(
                                   isDarkMode
                                       ? Icons.light_mode
                                       : Icons.dark_mode,
+                                  color: Colors.white,
                                 ),
                                 onPressed: () {
                                   ref
@@ -168,7 +170,10 @@ class _HomePageState extends ConsumerState<HomePage> with UrlLauncherMixin {
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
-                                Icon(Icons.download),
+                                const Icon(
+                                  Icons.download,
+                                  color: Colors.white,
+                                ),
                               ],
                             ),
                           ),
@@ -180,6 +185,7 @@ class _HomePageState extends ConsumerState<HomePage> with UrlLauncherMixin {
             appBar: AppBar(
               backgroundColor: currentColor.withValues(alpha: 0.3),
               actionsPadding: EdgeInsets.zero,
+              centerTitle: isMobile ? true : false,
               actions: isMobile
                   ? null
                   : [

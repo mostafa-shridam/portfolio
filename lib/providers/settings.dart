@@ -138,7 +138,7 @@ class SettingsNotifier extends _$SettingsNotifier {
     try {
       scrollController.animateTo(
         index * 600,
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 600),
         curve: Curves.easeInOut,
       );
       state = state.copyWith(isLoading: false);

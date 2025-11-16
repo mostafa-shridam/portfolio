@@ -2,7 +2,15 @@
 <html>
 
 <head>
-  <meta http-equiv="refresh" content="0; URL='/portfolio/home/'" />
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    // Save original path
+    sessionStorage.redirect = location.pathname + location.search + location.hash;
+
+    // Redirect back to index.html
+    window.location.replace("/portfolio/");
+  </script>
 </head>
 
 <body></body>

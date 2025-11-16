@@ -33,7 +33,7 @@ class SocialLinksDisplay extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.transparent.withValues(alpha: 0.1),
             blurRadius: 6,
             offset: Offset(0, 2),
           ),

@@ -26,7 +26,7 @@ const MaterialColor greenSwatch = MaterialColor(0XFF000000, {
   900: Color(0xFF0F0E0E),
 });
 
-ThemeData getLightTheme(String fontFamily) {
+ThemeData getLightTheme(String fontFamily, {int? userColor}) {
   return _buildTheme(
     brightness: Brightness.light,
     fontFamily: fontFamily,
@@ -34,28 +34,29 @@ ThemeData getLightTheme(String fontFamily) {
     backgroundColor: whiteColor,
     surfaceColor: whiteColor,
     dividerColor: greenSwatch.shade200,
-    iconColor: greenSwatch.shade600,
+    iconColor: userColor != null ? Color(userColor) : primaryColor,
     navLabelColor: greenSwatch.shade900,
     navUnselectedColor: greenSwatch.shade600,
     appBarColor: whiteColor,
     overlayBrightness: Brightness.dark,
+    userColor: userColor,
   );
 }
 
-ThemeData getDarkTheme(String fontFamily) {
+ThemeData getDarkTheme(String fontFamily, {int? userColor}) {
   return _buildTheme(
-    brightness: Brightness.dark,
-    fontFamily: fontFamily,
-    baseColor: greenSwatch.shade50,
-    backgroundColor: greenSwatch.shade900,
-    surfaceColor: greenSwatch.shade800,
-    dividerColor: greenSwatch.shade600,
-    iconColor: primaryColor,
-    navLabelColor: greenSwatch.shade100,
-    navUnselectedColor: greenSwatch.shade300,
-    appBarColor: greenSwatch.shade900,
-    overlayBrightness: Brightness.light,
-  );
+      brightness: Brightness.dark,
+      fontFamily: fontFamily,
+      baseColor: greenSwatch.shade50,
+      backgroundColor: greenSwatch.shade900,
+      surfaceColor: greenSwatch.shade800,
+      dividerColor: greenSwatch.shade600,
+      iconColor: userColor != null ? Color(userColor) : primaryColor,
+      navLabelColor: greenSwatch.shade100,
+      navUnselectedColor: greenSwatch.shade300,
+      appBarColor: greenSwatch.shade900,
+      overlayBrightness: Brightness.light,
+      userColor: userColor);
 }
 
 ThemeData _buildTheme({
@@ -70,6 +71,7 @@ ThemeData _buildTheme({
   required Color navUnselectedColor,
   required Color appBarColor,
   required Brightness overlayBrightness,
+  final int? userColor,
 }) {
   final alpha = fontFamily == FontFamily.cairo.toStr ? -3.0 : 0.0;
   final textTheme = TextTheme(
@@ -160,7 +162,7 @@ ThemeData _buildTheme({
     dividerTheme: DividerThemeData(color: dividerColor, thickness: 0.67),
     colorScheme: ColorScheme(
       brightness: brightness,
-      primary: primaryColor,
+      primary: userColor != null ? Color(userColor) : primaryColor,
       secondary: accentColor,
       surface: surfaceColor,
       error: dangerRed,
@@ -229,7 +231,6 @@ ThemeData _buildTheme({
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
-
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: surfaceColor,

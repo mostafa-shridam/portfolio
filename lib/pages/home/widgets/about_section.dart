@@ -73,6 +73,7 @@ class AboutSection extends ConsumerWidget {
                   education: education,
                   theme: theme,
                   isDark: isDark,
+                  isMobile: isMobile,
                 )
               : _buildDesktopLayout(
                   context: context,
@@ -96,10 +97,21 @@ class AboutSection extends ConsumerWidget {
     required List<Education> education,
     required ThemeData theme,
     required bool isDark,
+    required bool isMobile,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (isMobile) ...[
+          _buildBioSection(
+            context: context,
+            theme: theme,
+            isDark: isDark,
+            aboutData: aboutData,
+          ),
+          const SizedBox(height: 16),
+        ],
+
         // Education on top for mobile
         if (education.isNotEmpty) ...[
           _buildSectionTitle(context, 'Education'),
@@ -202,11 +214,11 @@ class AboutSection extends ConsumerWidget {
           children: [
             // Location - only render if not empty
             if (aboutData.location?.isNotEmpty ?? false)
-              _buildInfoChip(
+              MyChip(
+                title: aboutData.location ?? '',
+                selectedColor: selectedColor,
                 icon: Icons.location_on_outlined,
-                label: aboutData.location!,
-                isDark: isDark,
-                theme: theme,
+                border: 100,
               ),
 
             // Availability Status
@@ -234,12 +246,13 @@ class AboutSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildBioSection(
-          context: context,
-          theme: theme,
-          isDark: isDark,
-          aboutData: aboutData,
-        ),
+        if (!isMobile)
+          _buildBioSection(
+            context: context,
+            theme: theme,
+            isDark: isDark,
+            aboutData: aboutData,
+          ),
         const SizedBox(height: 16),
         // Only build work experience section if data exists
         if (workExperience.isNotEmpty)
@@ -299,8 +312,6 @@ class AboutSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(context, 'Education'),
-        const SizedBox(height: 16),
         Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -328,29 +339,6 @@ class AboutSection extends ConsumerWidget {
             letterSpacing: -0.5,
           ),
     ).animate().fadeIn(duration: 600.ms).slideX(begin: -0.2, end: 0);
-  }
-
-  /// Builds info chip for location display
-  Widget _buildInfoChip({
-    required IconData icon,
-    required String label,
-    required bool isDark,
-    required ThemeData theme,
-  }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 18, color: isDark ? Colors.white70 : Colors.black54),
-        const SizedBox(width: 8),
-        Text(
-          label,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
-            color: isDark ? Colors.white70 : Colors.black87,
-          ),
-        ),
-      ],
-    );
   }
 
   /// Builds availability status chip

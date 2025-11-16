@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/firebase_options.dart';
 import 'package:portfolio/providers/settings.dart';
 import 'package:dynamic_path_url_strategy/dynamic_path_url_strategy.dart';
+import 'package:portfolio/providers/user.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'core/constants.dart';
 import 'core/extensions/font_family.dart';
@@ -66,6 +67,7 @@ class MyApp extends ConsumerWidget {
         ref.watch(settingsProvider).fontFamily?.toStr ?? FontFamily.cairo.toStr;
     final fontSize =
         ref.watch(settingsProvider).fontSizes?.size ?? FontSizes.medium.size;
+    final userColor = ref.read(userDataProvider).user?.selectedColor;
     return GestureDetector(
       onTap: unfocusCurrent,
       child: ResponsiveBreakpoints(
@@ -82,8 +84,8 @@ class MyApp extends ConsumerWidget {
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
-            theme: getLightTheme(fontFamily),
-            darkTheme: getDarkTheme(fontFamily),
+            theme: getLightTheme(fontFamily, userColor: userColor),
+            darkTheme: getDarkTheme(fontFamily, userColor: userColor),
             themeMode: themeMode.flutterThemeMode,
             routerConfig: AppRouter.router,
             builder: (context, child) {

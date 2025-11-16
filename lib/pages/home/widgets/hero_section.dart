@@ -27,7 +27,7 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
     final Color currentColor = Color(selectedColor);
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.94,
+      height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
