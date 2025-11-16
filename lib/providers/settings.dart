@@ -43,6 +43,8 @@ class SettingsNotifier extends _$SettingsNotifier {
     state = state.copyWith(isLoading: true);
     try {
       await _box.saveData(key: Constants.fontSize.name, value: fontSize.toStr);
+      if (!ref.mounted) return;
+
       state = state.copyWith(fontSizes: fontSize, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false);
@@ -56,6 +58,8 @@ class SettingsNotifier extends _$SettingsNotifier {
         key: Constants.fontFamily.name,
         value: fontFamily.toStr,
       );
+      if (!ref.mounted) return;
+
       state = state.copyWith(fontFamily: fontFamily, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false);
@@ -67,6 +71,7 @@ class SettingsNotifier extends _$SettingsNotifier {
     try {
       state = state.copyWith(themeMode: themeMode);
       await _changeStatusBarColor(themeMode);
+
       await _box.saveData(
         key: Constants.themeKey.name,
         value: state.themeMode?.name,
@@ -85,6 +90,8 @@ class SettingsNotifier extends _$SettingsNotifier {
         key: Constants.languageKey.name,
         value: language.toStr,
       );
+      if (!ref.mounted) return;
+
       state = state.copyWith(isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false);

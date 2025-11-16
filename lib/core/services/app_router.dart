@@ -8,12 +8,12 @@ import '../models/project.dart';
 /// browser back/forward navigation on web, and easy route expansion.
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '/default',
-    
+    initialLocation: '${HomePage.routeName}/:userId',
+
     routes: [
       /// Auth Page
       GoRoute(
-        path: '/:userId',
+        path: '${HomePage.routeName}/:userId',
         name: HomePage.routeName,
         builder: (context, state) {
           final userId = state.pathParameters['userId']!;
@@ -30,7 +30,6 @@ class AppRouter {
 
           final project = extra?['project'] as Project?;
           final selectedColor = extra?['selectedColor'] as int?;
-
           return ProjectDetails(project: project, selectedColor: selectedColor);
         },
       ),

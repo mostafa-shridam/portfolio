@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/courses.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Courses extends _$Courses {
   late FirebaseFirestore _firestore;
   @override
@@ -15,20 +15,18 @@ class Courses extends _$Courses {
     return CoursesState();
   }
 
-  Future<void> getCoursesByUserId(String? userId) async {
+  Future<void> getCoursesByUserId(String userId) async {
     state = state.copyWith(isLoading: true);
     try {
-      if (userId == null) throw Exception('User not authenticated');
-      if (!ref.mounted) return; // لو widget اتدمرت، سيب الموضوع
-
       final snap = await _firestore
-          .collection(Constants.coursesBox.name)
+          .collection(Constants.courses.name)
           .doc(userId)
           .collection(Constants.courses.name)
           .get();
-      final courses = List<Course>.from(
-        snap.docs.map((doc) => Course.fromJson(doc.data())),
-      );
+      if (!ref.mounted) return;
+
+      final courses =
+          snap.docs.map((doc) => Course.fromJson(doc.data())).toList();
       state = state.copyWith(courses: courses, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false);

@@ -1,38 +1,23 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/enum/constants.dart';
-import '../../../../core/local_service/save_user.dart';
 import '../../../../core/models/about.dart';
 import '../../../../core/models/education.dart';
 import '../../../../core/models/experience.dart';
 
 part 'generated/about.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class AboutProvider extends _$AboutProvider {
   late FirebaseFirestore _firestore;
-  late SaveUser _saveUser;
 
   @override
   AboutState build() {
     _firestore = FirebaseFirestore.instance;
-    _saveUser = SaveUser.instance;
-
-    // Load data from local storage first
-    final localAbout = _saveUser.getAboutData();
-    final localWorkExperience = _saveUser.getWorkExperience();
-    final localEducation = _saveUser.getEducation();
-
-    // Fetch fresh data from Firebase in the background
 
     return AboutState(
-      about: localAbout,
-      workExperience: localWorkExperience,
-      education: localEducation,
-      isLoading: false,
     );
   }
 
@@ -44,16 +29,14 @@ class AboutProvider extends _$AboutProvider {
     state = state.copyWith(isLoading: true);
 
     try {
-      if (!ref.mounted) return;
       final aboutData = await _firestore
           .collection(Constants.aboutData.name)
           .doc(userId)
           .get();
+      if (!ref.mounted) return;
 
       if (aboutData.exists && aboutData.data() != null) {
         final about = AboutModel.fromJson(aboutData.data()!);
-        await _saveUser.saveAboutData(jsonEncode(about.toJson()));
-
         state = state.copyWith(
           about: about,
           isLoading: false,
@@ -80,12 +63,12 @@ class AboutProvider extends _$AboutProvider {
   Future<void> _getWorkExperience(String userId) async {
     state = state.copyWith(isLoading: true);
     try {
-      if (!ref.mounted) return;
       final workExperience = await _firestore
           .collection(Constants.workExperience.name)
           .doc(userId)
           .collection(Constants.workExperience.name)
           .get();
+      if (!ref.mounted) return;
 
       if (workExperience.docs.isNotEmpty) {
         final workExperienceData = workExperience.docs
@@ -93,10 +76,6 @@ class AboutProvider extends _$AboutProvider {
             .toList();
 
         final sortedList = _sortExperienceByDate(workExperienceData);
-
-        await _saveUser.saveWorkExperience(
-          jsonEncode(sortedList.map((e) => e.toJson()).toList()),
-        );
 
         state = state.copyWith(
           workExperience: sortedList,
@@ -124,12 +103,12 @@ class AboutProvider extends _$AboutProvider {
   Future<void> _getEducation(String userId) async {
     state = state.copyWith(isLoading: true);
     try {
-      if (!ref.mounted) return;
       final educationData = await _firestore
           .collection(Constants.education.name)
           .doc(userId)
           .collection(Constants.education.name)
           .get();
+      if (!ref.mounted) return;
 
       if (educationData.docs.isNotEmpty) {
         final educationList = educationData.docs
@@ -138,9 +117,7 @@ class AboutProvider extends _$AboutProvider {
 
         final sortedList = _sortEducationByDate(educationList);
 
-        await _saveUser.saveEducation(
-          jsonEncode(sortedList.map((e) => e.toJson()).toList()),
-        );
+    
 
         state = state.copyWith(
           education: sortedList,
@@ -169,13 +146,12 @@ class AboutProvider extends _$AboutProvider {
   Future<void> fetchAllData(String userId) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      if (!ref.mounted) return; // لو widget اتدمرت، سيب الموضوع
-
       await Future.wait([
         _getAboutData(userId),
         _getWorkExperience(userId),
         _getEducation(userId),
       ]);
+      if (!ref.mounted) return;
 
       state = state.copyWith(isLoading: false, clearError: true);
 
@@ -184,28 +160,6 @@ class AboutProvider extends _$AboutProvider {
       }
     } catch (e) {
       _handleError('Error refreshing all data', e);
-    }
-  }
-
-  void loadLocalData() {
-    final localAbout = _saveUser.getAboutData();
-    final localWorkExperience = _saveUser.getWorkExperience();
-    final localEducation = _saveUser.getEducation();
-
-    state = state.copyWith(
-      about: localAbout,
-      workExperience: localWorkExperience,
-      education: localEducation,
-      isLoading: false,
-      clearError: true,
-    );
-
-    if (kDebugMode) {
-      log(
-        'Local data loaded - About: ${localAbout != null}, '
-        'Work: ${localWorkExperience?.length ?? 0}, '
-        'Education: ${localEducation?.length ?? 0}',
-      );
     }
   }
 

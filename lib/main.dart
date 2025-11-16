@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/firebase_options.dart';
 import 'package:portfolio/providers/settings.dart';
-
+import 'package:dynamic_path_url_strategy/dynamic_path_url_strategy.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'core/constants.dart';
 import 'core/extensions/font_family.dart';
@@ -33,6 +33,8 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
 
       await init();
+      setPathUrlStrategy();
+
       runApp(
         ProviderScope(
           child: EasyLocalization(

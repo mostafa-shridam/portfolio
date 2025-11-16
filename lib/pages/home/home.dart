@@ -18,7 +18,7 @@ import 'widgets/skills_section.dart';
 import 'widgets/nav_item.dart';
 
 class HomePage extends ConsumerStatefulWidget {
-  static const routeName = '/home-page';
+  static const routeName = '/home';
   final String userId;
   const HomePage({super.key, required this.userId});
   @override

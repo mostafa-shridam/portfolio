@@ -6,7 +6,7 @@ import 'package:portfolio/providers/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'generated/init.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Init extends _$Init {
   @override
   InitState build() {
@@ -16,34 +16,21 @@ class Init extends _$Init {
   Future<void> initAllData(String userId) async {
     state = state.copyWith(isLoading: true);
     try {
+      await ref.read(userDataProvider.notifier).getUserData(userId);
       if (!ref.mounted) return;
 
-      final userFuture =
-          ref.read(userDataProvider.notifier).getUserData(userId);
-      final aboutFuture =
-          ref.read(aboutProviderProvider.notifier).fetchAllData(userId);
-      final coursesFuture =
-          ref.read(coursesProvider.notifier).getCoursesByUserId(userId);
-      final projectsFuture =
-          ref.read(projectsProvider.notifier).getProjectsByUserId(userId);
-      final skillsFuture =
-          ref.read(skillsProvider.notifier).getSkillsByUserId(userId);
-
-      // انتظر كل الفيوتشرز واحدة واحدة وتحقق من mounted بعد كل واحدة
-      await userFuture;
+      await ref.read(aboutProviderProvider.notifier).fetchAllData(userId);
       if (!ref.mounted) return;
 
-      await aboutFuture;
+      await ref.read(coursesProvider.notifier).getCoursesByUserId(userId);
       if (!ref.mounted) return;
 
-      await coursesFuture;
+      await ref.read(projectsProvider.notifier).getProjectsByUserId(userId);
       if (!ref.mounted) return;
 
-      await projectsFuture;
+      await ref.read(skillsProvider.notifier).getSkillsByUserId(userId);
       if (!ref.mounted) return;
-
-      await skillsFuture;
-      if (!ref.mounted) return;
+      state = state.copyWith(isLoading: false, isError: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, isError: true);
       state = state.copyWith(errorMessage: e.toString());

@@ -6,7 +6,7 @@ import '../core/models/project.dart';
 
 part 'generated/projects.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Projects extends _$Projects {
   late FirebaseFirestore _firestore;
   @override
@@ -15,21 +15,19 @@ class Projects extends _$Projects {
     return ProjectsState();
   }
 
-  Future<void> getProjectsByUserId(String? userId) async {
+  Future<void> getProjectsByUserId(String userId) async {
     state = state.copyWith(isLoading: true);
     try {
-      if (userId == null) throw Exception('User not authenticated');
-      if (!ref.mounted) return; // لو widget اتدمرت، سيب الموضوع
-
       final snap = await _firestore
           .collection(Constants.projectsBox.name)
           .doc(userId)
           .collection(Constants.projects.name)
           .get();
-      final proects = List<Project>.from(
-        snap.docs.map((doc) => Project.fromJson(doc.data())),
-      );
-      state = state.copyWith(projects: proects, isLoading: false);
+      if (!ref.mounted) return;
+
+      final projects =
+          snap.docs.map((doc) => Project.fromJson(doc.data())).toList();
+      state = state.copyWith(projects: projects, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false);
       rethrow;

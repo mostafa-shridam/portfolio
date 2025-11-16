@@ -6,7 +6,7 @@ import '../core/enum/constants.dart';
 
 part 'generated/user.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class UserData extends _$UserData {
   late FirebaseFirestore _firestore;
   @override
@@ -18,12 +18,11 @@ class UserData extends _$UserData {
   Future<void> getUserData(String userId) async {
     state = state.copyWith(isLoading: true);
     try {
-      if (!ref.mounted) return; // لو widget اتدمرت، سيب الموضوع
-
       final snap = await _firestore
           .collection(Constants.portfolioUser.name)
           .doc(userId)
           .get();
+      if (!ref.mounted) return;
       final user = UserModel.fromJson(snap.data() ?? {});
       state = state.copyWith(user: user, isLoading: false);
     } catch (e) {
