@@ -12,6 +12,7 @@ import '../../../core/services/helper.dart';
 import '../../../core/theme/style.dart';
 import '../../../core/widgets/my_chip.dart';
 import '../../../providers/about.dart';
+
 /// About Section Widget
 /// Displays user's bio, availability status, work experience, and education
 /// in a responsive grid layout with all experience fields
@@ -66,7 +67,7 @@ class AboutSection extends ConsumerWidget {
         vertical: verticalPadding,
       ),
       child: !aboutState.hasData
-          ? Center(child: Text('You can add about you here'))
+          ? Center(child: Text('No About data found'))
           : isMobile
               ? _buildMobileLayout(
                   context: context,

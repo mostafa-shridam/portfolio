@@ -23,7 +23,6 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
   Widget build(BuildContext context) {
     final isMobile = ResponsiveBreakpoints.of(context).isMobile;
     final isTablet = ResponsiveBreakpoints.of(context).isTablet;
-    final isDesktop = ResponsiveBreakpoints.of(context).isDesktop;
     final projects = ref.watch(
       projectsProvider.select((value) => value.projects ?? []),
     );
@@ -76,16 +75,12 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                     ? 1
                     : isTablet
                         ? 2
-                        : isDesktop
-                            ? 2
-                            : 3,
+                        : 3,
                 childAspectRatio: isMobile
                     ? 2.1
                     : isTablet
                         ? 1.3
-                        : isDesktop
-                            ? 2.4
-                            : 2.6,
+                        : 2.4,
               ),
               itemBuilder: (context, index) => ProjectCard(
                 project: projects[index],
@@ -153,12 +148,12 @@ class ProjectCard extends ConsumerWidget {
                   child: project.image?.isEmpty ?? true
                       ? Icon(
                           FontAwesomeIcons.image,
-                          size: 80,
+                          size: 100,
                           color: Color(selectedColor),
                         )
                       : Image.network(
                           project.image ?? '',
-                          height: 100,
+                          height: 20,
                           fit: BoxFit.cover,
                         ),
                 ),

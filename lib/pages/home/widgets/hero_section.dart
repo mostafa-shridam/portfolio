@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../core/enum/temp_icon.dart';
-import '../../../core/local_service/save_user.dart';
 import '../../../core/mixins/url_launcher.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/widgets/languages_display.dart';
@@ -26,9 +25,7 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
     final textTheme = Theme.of(context).textTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final Color currentColor = Color(selectedColor);
-    final userTempIndex = ref.read(
-      saveUserProvider.select((e) => e.getUserData()?.templateIndex),
-    );
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.94,
       decoration: BoxDecoration(
@@ -74,17 +71,13 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        (userData.bio == null || userData.bio!.isEmpty)
-                            ? 'لم تقم بإضافة نبذة؛ يمكنك إضافة نبذة تعريفية هنا.'
-                            : userData.bio!,
+                        userData.bio ?? '',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: isDark ? Colors.white70 : Colors.black54,
                             ),
                       ),
                       Text(
-                        (userData.name == null || userData.name!.isEmpty)
-                            ? 'لم يتم إضافة اسم، يمكنك إضافة اسمك!'
-                            : userData.name!,
+                        userData.name ?? '',
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge
@@ -98,18 +91,6 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
                           userData.jobTitle!.isNotEmpty)
                         Text(
                           userData.jobTitle!,
-                          style: textTheme.bodyLarge?.copyWith(
-                            color: isDark ? Colors.white70 : Colors.black54,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                            .animate()
-                            .fadeIn(delay: 200.ms, duration: 600.ms)
-                            .slideX(begin: -0.2, end: 0, duration: 600.ms),
-                      if (userData.jobTitle == null ||
-                          userData.jobTitle!.isEmpty)
-                        Text(
-                          'يمكنك إضافة المسمى الوظيفي هنا.',
                           style: textTheme.bodyLarge?.copyWith(
                             color: isDark ? Colors.white70 : Colors.black54,
                             fontWeight: FontWeight.bold,
@@ -134,7 +115,7 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
                   if (!isMobile)
                     Center(
                       child: Icon(
-                        TempIcon.byIndex(userTempIndex ?? 0),
+                        TempIcon.byIndex(userData.templateIndex ?? 0),
                         size: isMobile ? 150 : 200,
                         color: Colors.white,
                       ),
@@ -146,7 +127,7 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          userData.location!,
+                          userData.location ?? '',
                           style: textTheme.bodyMedium?.copyWith(
                             color: isDark ? Colors.white60 : Colors.black45,
                           ),
@@ -163,16 +144,7 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
                         .fadeIn(delay: 300.ms, duration: 600.ms)
                         .slideX(begin: -0.2, end: 0, duration: 600.ms),
                   ],
-                  if (userData.location == null || userData.location!.isEmpty)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(end: 24.0),
-                      child: Text(
-                        'يمكنك إضافة موقعك.',
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: isDark ? Colors.white60 : Colors.black45,
-                        ),
-                      ),
-                    ),
+
                   // Languages
                   if (userData.languages != null &&
                       userData.languages!.isNotEmpty) ...[
@@ -203,20 +175,6 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
                           .slideX(begin: -0.2, end: 0, duration: 600.ms),
                     ),
                   ],
-                  if (userData.languages == null || userData.languages!.isEmpty)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        end: 24.0,
-                        top: 20.0,
-                      ),
-                      child: Text(
-                        'لم تضف أي لغات بعد. اضف بعض اللغات التي تتقنها.',
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: isDark ? Colors.white60 : Colors.black45,
-                        ),
-                        textAlign: TextAlign.end,
-                      ),
-                    ),
                 ],
               ),
             ],

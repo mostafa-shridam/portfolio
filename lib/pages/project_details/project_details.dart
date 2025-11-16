@@ -27,7 +27,9 @@ class ProjectDetails extends ConsumerWidget with UrlLauncherMixin {
     }
 
     return Scaffold(
+      backgroundColor: color.withValues(alpha: 0.1),
       appBar: AppBar(
+        backgroundColor: color.withValues(alpha: 0.2),
         title: Text(
           project?.title ?? 'Project Details',
           style: Theme.of(
