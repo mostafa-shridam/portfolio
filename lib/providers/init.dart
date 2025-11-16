@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:portfolio/providers/about.dart';
 import 'package:portfolio/providers/courses.dart';
 import 'package:portfolio/providers/projects.dart';
