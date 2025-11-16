@@ -21,10 +21,10 @@ class HomePage extends ConsumerStatefulWidget {
   final String userId;
   const HomePage({super.key, required this.userId});
   @override
-  ConsumerState<HomePage> createState() => _ProfessionalDevState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _ProfessionalDevState extends ConsumerState<HomePage>
+class _HomePageState extends ConsumerState<HomePage>
     with UrlLauncherMixin {
   @override
   void initState() {
