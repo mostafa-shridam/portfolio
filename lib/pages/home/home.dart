@@ -28,10 +28,9 @@ class _HomePageState extends ConsumerState<HomePage> with UrlLauncherMixin {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () async =>
-          await ref.read(initProvider.notifier).initAllData(widget.userId),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref.read(initProvider.notifier).initAllData(widget.userId);
+    });
   }
 
   @override
@@ -59,9 +58,7 @@ class _HomePageState extends ConsumerState<HomePage> with UrlLauncherMixin {
     if (isLoading == true) {
       return Scaffold(
         body: Center(
-          child: CircularProgressIndicator(
-            color: currentColor,
-          ),
+          child: CircularProgressIndicator(),
         ),
       );
     }

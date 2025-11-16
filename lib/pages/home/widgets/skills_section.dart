@@ -19,7 +19,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
   @override
   Widget build(BuildContext context) {
     final isMobile = ResponsiveBreakpoints.of(context).isMobile;
-    final isLoading = ref.watch(skillsProvider).isLoading ;
+    final isLoading = ref.watch(skillsProvider).isLoading;
     final color = Color(widget.selectedColor);
 
     final skills = ref.watch(skillsProvider.select((e) => e.skills));
@@ -36,10 +36,14 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'The skills, tools, and technologies I\'m really good at :',
+                isMobile
+                    ? 'The skills, tools, and technologies\n I\'m really good at :'
+                    : 'The skills, tools, and technologies I\'m really good at :',
                 style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -106,8 +110,6 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                                 if (skill.image != null &&
                                     skill.image!.isNotEmpty) {
                                   // handle base64 data urls or network images
-                                  log('skills length: ${skill.image}');
-
                                   if (skill.image!.startsWith('data:')) {
                                     try {
                                       final comma = skill.image!.indexOf(',');

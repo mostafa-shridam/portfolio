@@ -45,7 +45,8 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
           minHeight: MediaQuery.of(context).size.height,
         ),
         child: Padding(
-          padding: const EdgeInsetsDirectional.only(end: 40, top: 70, start: 8),
+          padding: EdgeInsetsDirectional.only(
+              end: isMobile ? 16 : 40, top: 70, start: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,14 +113,13 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
                 spacing: 8,
                 children: [
                   SizedBox(height: 80),
-                  if (!isMobile)
-                    Center(
-                      child: Icon(
-                        TempIcon.byIndex(userData.templateIndex ?? 0),
-                        size: isMobile ? 150 : 200,
-                        color: Colors.white,
-                      ),
-                    ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
+                  Center(
+                    child: Icon(
+                      TempIcon.byIndex(userData.templateIndex ?? 0),
+                      size: isMobile ? 100 : 200,
+                      color: Colors.white,
+                    ),
+                  ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
                   if (userData.location != null &&
                       userData.location!.isNotEmpty) ...[
                     const SizedBox(height: 8),
@@ -150,7 +150,7 @@ class HeroSection extends ConsumerWidget with UrlLauncherMixin {
                       userData.languages!.isNotEmpty) ...[
                     const SizedBox(height: 12),
                     SizedBox(
-                      width: 500,
+                      width: isMobile ? 200 : 500,
                       child: Wrap(
                         spacing: 6,
                         runSpacing: 6,

@@ -79,7 +79,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 childAspectRatio: isMobile
                     ? 2.1
                     : isTablet
-                        ? 1.3
+                        ? 1.8
                         : 2.4,
               ),
               itemBuilder: (context, index) => ProjectCard(

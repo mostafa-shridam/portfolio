@@ -31,15 +31,15 @@ class OpenOrCopyButton extends StatelessWidget
       onTap: () => url?.isNotEmpty ?? false
           ? myLaunchUrl(url ?? '')
           : share?.isNotEmpty ?? false
-          ? {
-              copyToClipboard(share ?? ''),
-              showSnackBar(
-                context: context,
-                message: 'Your Portfolio Link Copied to clipboard',
-                color: color,
-              ),
-            }
-          : showSnackBar(context: context, message: 'No link available'),
+              ? {
+                  copyToClipboard(share ?? ''),
+                  showSnackBar(
+                    context: context,
+                    message: 'Your Portfolio Link Copied to clipboard',
+                    color: color,
+                  ),
+                }
+              : showSnackBar(context: context, message: 'No link available'),
       child: Container(
         width: width,
         decoration: BoxDecoration(
@@ -52,6 +52,8 @@ class OpenOrCopyButton extends StatelessWidget
         ),
         child: Center(
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(icon, size: isMobile ? 18 : 20, color: Color(color)),
               SizedBox(width: isMobile ? 6 : 8),

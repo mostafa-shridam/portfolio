@@ -10,7 +10,7 @@ import '../../core/mixins/url_launcher.dart';
 
 class ProjectDetails extends ConsumerWidget with UrlLauncherMixin {
   const ProjectDetails({super.key, this.project, this.selectedColor});
-  static const routeName = '/details';
+  static const routeName = '/project-details';
   final Project? project;
   final int? selectedColor;
   @override

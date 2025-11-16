@@ -31,10 +31,8 @@ void main() async {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-
-      await init();
       setPathUrlStrategy();
-
+      await init();
       runApp(
         ProviderScope(
           child: EasyLocalization(

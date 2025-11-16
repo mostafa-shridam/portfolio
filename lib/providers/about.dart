@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:portfolio/providers/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/enum/constants.dart';
 import '../../../../core/models/about.dart';
@@ -9,16 +10,19 @@ import '../../../../core/models/experience.dart';
 
 part 'generated/about.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class AboutProvider extends _$AboutProvider {
   late FirebaseFirestore _firestore;
 
   @override
   AboutState build() {
     _firestore = FirebaseFirestore.instance;
-
-    return AboutState(
+    Future.microtask(
+      () {
+        fetchAllAboutData(ref.watch(userDataProvider).user?.id ?? '');
+      },
     );
+    return AboutState();
   }
 
   // ============================================
@@ -26,31 +30,23 @@ class AboutProvider extends _$AboutProvider {
   // ============================================
 
   Future<void> _getAboutData(String userId) async {
-    state = state.copyWith(isLoading: true);
-
     try {
       final aboutData = await _firestore
           .collection(Constants.aboutData.name)
           .doc(userId)
           .get();
+
       if (!ref.mounted) return;
 
       if (aboutData.exists && aboutData.data() != null) {
         final about = AboutModel.fromJson(aboutData.data()!);
+
         state = state.copyWith(
           about: about,
-          isLoading: false,
           clearError: true,
         );
-
-        if (kDebugMode) {
-          log('About data retrieved and saved to local storage');
-        }
       } else {
-        state = state.copyWith(isLoading: false, clearError: true);
-        if (kDebugMode) {
-          log('No about data found in Firebase');
-        }
+        state = state.copyWith(clearError: true);
       }
     } catch (e) {
       _handleError('Error getting about data', e);
@@ -60,6 +56,7 @@ class AboutProvider extends _$AboutProvider {
   // ============================================
   // WORK EXPERIENCE METHODS
   // ============================================
+
   Future<void> _getWorkExperience(String userId) async {
     state = state.copyWith(isLoading: true);
     try {
@@ -76,16 +73,11 @@ class AboutProvider extends _$AboutProvider {
             .toList();
 
         final sortedList = _sortExperienceByDate(workExperienceData);
-
         state = state.copyWith(
           workExperience: sortedList,
           isLoading: false,
           clearError: true,
         );
-
-        if (kDebugMode) {
-          log('Work experience retrieved: ${sortedList.length} items');
-        }
       } else {
         state = state.copyWith(isLoading: false, clearError: true);
         if (kDebugMode) {
@@ -117,17 +109,11 @@ class AboutProvider extends _$AboutProvider {
 
         final sortedList = _sortEducationByDate(educationList);
 
-    
-
         state = state.copyWith(
           education: sortedList,
           isLoading: false,
           clearError: true,
         );
-
-        if (kDebugMode) {
-          log('Education retrieved: ${sortedList.length} items');
-        }
       } else {
         state = state.copyWith(isLoading: false, clearError: true);
         if (kDebugMode) {
@@ -143,21 +129,18 @@ class AboutProvider extends _$AboutProvider {
   // UTILITY METHODS
   // ============================================
 
-  Future<void> fetchAllData(String userId) async {
+  Future<void> fetchAllAboutData(String userId) async {
     state = state.copyWith(isLoading: true, clearError: true);
+
     try {
-      await Future.wait([
-        _getAboutData(userId),
-        _getWorkExperience(userId),
-        _getEducation(userId),
-      ]);
+      await _getAboutData(userId);
+      if (!ref.mounted) return;
+      _getWorkExperience(userId);
+      if (!ref.mounted) return;
+      _getEducation(userId);
       if (!ref.mounted) return;
 
       state = state.copyWith(isLoading: false, clearError: true);
-
-      if (kDebugMode) {
-        log('All data refreshed successfully');
-      }
     } catch (e) {
       _handleError('Error refreshing all data', e);
     }
@@ -216,13 +199,13 @@ class AboutProvider extends _$AboutProvider {
 // ============================================
 
 class AboutState {
-  final AboutModel? about;
-  final List<Experience>? workExperience;
-  final List<Education>? education;
-  final bool isLoading;
-  final String? error;
+  AboutModel? about;
+  List<Experience>? workExperience;
+  List<Education>? education;
+  bool isLoading;
+  String? error;
 
-  const AboutState({
+  AboutState({
     this.about,
     this.workExperience,
     this.education,

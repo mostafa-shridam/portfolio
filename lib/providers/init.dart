@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:portfolio/providers/about.dart';
 import 'package:portfolio/providers/courses.dart';
 import 'package:portfolio/providers/projects.dart';
@@ -17,25 +19,15 @@ class Init extends _$Init {
     state = state.copyWith(isLoading: true);
     try {
       await ref.read(userDataProvider.notifier).getUserData(userId);
-      if (!ref.mounted) return;
-
-      await ref.read(aboutProviderProvider.notifier).fetchAllData(userId);
-      if (!ref.mounted) return;
-
-      await ref.read(coursesProvider.notifier).getCoursesByUserId(userId);
-      if (!ref.mounted) return;
-
-      await ref.read(projectsProvider.notifier).getProjectsByUserId(userId);
-      if (!ref.mounted) return;
-
+      await ref.read(aboutProviderProvider.notifier).fetchAllAboutData(userId);
       await ref.read(skillsProvider.notifier).getSkillsByUserId(userId);
-      if (!ref.mounted) return;
+      await ref.read(projectsProvider.notifier).getProjectsByUserId(userId);
+      await ref.read(coursesProvider.notifier).getCoursesByUserId(userId);
+
       state = state.copyWith(isLoading: false, isError: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, isError: true);
       state = state.copyWith(errorMessage: e.toString());
-    } finally {
-      state = state.copyWith(isLoading: false);
     }
   }
 }

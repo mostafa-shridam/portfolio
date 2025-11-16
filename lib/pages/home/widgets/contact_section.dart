@@ -7,7 +7,6 @@ import '../../../core/mixins/scaffold_messeneger.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/widgets/share_or_copy_button.dart';
 
-
 class ContactSection extends StatelessWidget
     with CopyMixin, ScaffoldMessengerMixin {
   const ContactSection({
@@ -66,9 +65,12 @@ class ContactSection extends StatelessWidget
             ],
           ),
           SizedBox(height: isMobile ? 24 : 32),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
             spacing: isMobile ? 8 : 16,
+            runSpacing: isMobile ? 8 : 16,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            runAlignment: WrapAlignment.center,
             children: [
               if (userData.email?.isNotEmpty ?? false || userData.email != null)
                 OpenOrCopyButton(
@@ -76,6 +78,7 @@ class ContactSection extends StatelessWidget
                   icon: Icons.email,
                   url: 'mailto:${userData.email ?? ''}',
                   color: selectedColor,
+                  width: 100,
                 ),
               if (userData.socialLinks?.linkedinUrl?.isNotEmpty ??
                   false || userData.socialLinks?.linkedinUrl != null)
@@ -84,6 +87,7 @@ class ContactSection extends StatelessWidget
                   icon: FontAwesomeIcons.linkedin,
                   url: userData.profileImage ?? '',
                   color: selectedColor,
+                  width: 130,
                 ),
               if (userData.phone?.isNotEmpty ?? false || userData.phone != null)
                 OpenOrCopyButton(
@@ -91,6 +95,7 @@ class ContactSection extends StatelessWidget
                   icon: FontAwesomeIcons.whatsapp,
                   url: 'https://wa.me/${userData.phone ?? ''}',
                   color: selectedColor,
+                  width: 140,
                 ),
               if (userData.socialLinks?.facebookUrl?.isNotEmpty ??
                   false || userData.socialLinks?.facebookUrl != null)
@@ -99,6 +104,7 @@ class ContactSection extends StatelessWidget
                   icon: FontAwesomeIcons.facebook,
                   url: userData.socialLinks?.facebookUrl ?? '',
                   color: selectedColor,
+                  width: 140,
                 ),
               if (userData.socialLinks?.instagramUrl?.isNotEmpty ??
                   false || userData.socialLinks?.instagramUrl != null)
@@ -107,6 +113,7 @@ class ContactSection extends StatelessWidget
                   icon: FontAwesomeIcons.instagram,
                   url: userData.socialLinks?.instagramUrl ?? '',
                   color: selectedColor,
+                  width: 140,
                 ),
               if (userData.socialLinks?.behanceUrl?.isNotEmpty ??
                   false || userData.socialLinks?.behanceUrl != null)
@@ -115,6 +122,7 @@ class ContactSection extends StatelessWidget
                   icon: FontAwesomeIcons.behance,
                   url: userData.socialLinks?.behanceUrl ?? '',
                   color: selectedColor,
+                  width: 130,
                 ),
               if (userData.socialLinks?.dribbbleUrl?.isNotEmpty ??
                   false || userData.socialLinks?.dribbbleUrl != null)
@@ -123,6 +131,7 @@ class ContactSection extends StatelessWidget
                   icon: FontAwesomeIcons.dribbble,
                   url: userData.socialLinks?.dribbbleUrl ?? '',
                   color: selectedColor,
+                  width: 140,
                 ),
             ],
           ),

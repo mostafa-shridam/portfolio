@@ -51,7 +51,7 @@ class AboutSection extends ConsumerWidget {
     }
 
     // Extract data once (null safety with default values)
-    final aboutData = aboutState.about ?? AboutModel();
+    final aboutData = aboutState.about;
     final workExperience = aboutState.workExperience ?? [];
     final education = aboutState.education ?? [];
     // Calculate padding once
@@ -60,18 +60,17 @@ class AboutSection extends ConsumerWidget {
         : (isTablet ? _tabletHorizontalPadding : _desktopHorizontalPadding);
     final verticalPadding =
         isMobile ? _mobileVerticalPadding : _desktopVerticalPadding;
-    log('aboutData : ${aboutState.hasData}');
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: horizontalPadding,
         vertical: verticalPadding,
       ),
-      child: !aboutState.hasData
-          ? Center(child: Text('No About data found'))
-          : isMobile
+      child: aboutState.hasData
+          ? isMobile
               ? _buildMobileLayout(
                   context: context,
-                  aboutData: aboutData,
+                  aboutData: aboutData ?? AboutModel(),
                   workExperience: workExperience,
                   education: education,
                   theme: theme,
@@ -79,14 +78,15 @@ class AboutSection extends ConsumerWidget {
                 )
               : _buildDesktopLayout(
                   context: context,
-                  aboutData: aboutData,
+                  aboutData: aboutData ?? AboutModel(),
                   workExperience: workExperience,
                   education: education,
                   theme: theme,
                   isDark: isDark,
                   isMobile: isMobile,
                   isTablet: isTablet,
-                ),
+                )
+          : Center(child: Text('No About data found')),
     );
   }
 
@@ -666,7 +666,6 @@ class AboutSection extends ConsumerWidget {
     );
 
     final accentColor = Color(selectedColor);
-    log('selectedColor in education card: ${education.toJson()}');
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
