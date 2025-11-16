@@ -19,10 +19,10 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
   @override
   Widget build(BuildContext context) {
     final isMobile = ResponsiveBreakpoints.of(context).isMobile;
-    final isLoading = ref.watch(skillsProvider).isLoading ?? false;
+    final isLoading = ref.watch(skillsProvider).isLoading ;
     final color = Color(widget.selectedColor);
 
-    final skills = ref.watch(skillsProvider.select((e) => e.skills ?? []));
+    final skills = ref.watch(skillsProvider.select((e) => e.skills));
     return Container(
       color: color.withValues(alpha: 0.2),
       width: double.infinity,

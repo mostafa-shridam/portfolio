@@ -5,7 +5,6 @@ import 'package:portfolio/providers/init.dart';
 import 'package:portfolio/providers/user.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import '../../core/extensions/theme_mode.dart';
-import '../../core/models/user_model.dart';
 import '../../core/portfolio_templates/developer_professional/widgets/download_cv_button.dart';
 import '../../core/theme/style.dart';
 import '../../providers/settings.dart';
